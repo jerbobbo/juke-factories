@@ -26,7 +26,7 @@
       </div>
 
       <div class="col-xs-10">
-        <div class="album" ng-controller="AlbumCtrl" ng-if="false">
+        <div class="album" ng-controller="AlbumCtrl" ng-if="true">
           <p>
             <h3>{{ album.name }}</h3> <h4> Duration: {{ album.totalDuration/60 | number:1 }} minutes</h4>
             <img ng-src="{{ album.imageUrl }}" class="img-thumbnail">
@@ -41,10 +41,10 @@
               </tr>
             </thead>
             <tbody>
-              <tr ng-repeat="song in album.songs" ng-class="{active: song === currentSong}">
+              <tr ng-repeat="song in album.songs" ng-class="{active: song === getCurrentSong()}">
                 <td>
                   <button class="btn btn-default btn-xs" ng-click="toggle(song)">
-                    <span class="glyphicon" ng-class="{'glyphicon-pause': playing && song === currentSong, 'glyphicon-play': song !== currentSong || !playing}"></span>
+                    <span class="glyphicon" ng-class="{'glyphicon-pause': isPlaying() && song === getCurrentSong(), 'glyphicon-play': song !== getCurrentSong() || !isPlaying()}"></span>
                   </button>
                 </td>
                 <td>{{ song.name }}</td>
@@ -55,7 +55,7 @@
           </table>
         </div>
 
-        <div ng-if="true" ng-controller="AllAlbumsCtrl">
+        <div ng-if="false" ng-controller="AllAlbumsCtrl">
 
           <h3>Albums</h3>
           <div class="row">
@@ -77,13 +77,13 @@
       </div>
 
       <footer>
-        <div ng-show="currentSong" ng-controller="PlayerCtrl">
+        <div ng-show="getCurrentSong()" ng-controller="PlayerCtrl">
           <div class="pull-left">
             <button class="btn btn-default" ng-click="prev()">
               <span class="glyphicon glyphicon-step-backward"></span>
             </button>
             <button class="btn btn-default" ng-click="toggle(currentSong)">
-              <span class="glyphicon" ng-class="{'glyphicon-pause': playing, 'glyphicon-play': !playing}"></span>
+              <span class="glyphicon" ng-class="{'glyphicon-pause': isPlaying(), 'glyphicon-play': !isPlaying()}"></span>
             </button>
             <button class="btn btn-default" ng-click="next()">
               <span class="glyphicon glyphicon-step-forward"></span>
