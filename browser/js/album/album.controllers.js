@@ -3,28 +3,41 @@
 juke.controller('AlbumCtrl', function($scope, $rootScope, $log, StatsFactory, AlbumFactory, PlayerFactory) {
 
   // load our initial data
-  AlbumFactory.fetchAll()
-  .then(function (albums) {
-    return AlbumFactory.fetchById(albums[3]._id); // temp: get one
-  })
-  .then(function (album) {
+  function showOneAlbum(id) {
+      AlbumFactory.fetchAll()
+    .then(function (albums) {
+      return AlbumFactory.fetchById(id); // temp: get one
+    })
+    .then(function (album) {
 
-    album.imageUrl = '/api/albums/' + album._id + '.image';
-    album.songs.forEach(function (song, i) {
-      song.audioUrl = '/api/songs/' + song._id + '.audio';
-      song.albumIndex = i;
-    });
-    $scope.album = album;
+      album.imageUrl = '/api/albums/' + album._id + '.image';
+      album.songs.forEach(function (song, i) {
+        song.audioUrl = '/api/songs/' + song._id + '.audio';
+        song.albumIndex = i;
+      });
+      $scope.album = album;
 
-    return StatsFactory.totalTime(album);
-  })
-  .then(function(duration){
-      $scope.album.totalDuration = duration;
-  })
-  .catch($log.error); // $log service can be turned on and off; also, pre-bound
+      return StatsFactory.totalTime(album);
+    })
+    .then(function(duration){
+        $scope.album.totalDuration = duration;
+    })
+    .catch($log.error); // $log service can be turned on and off; also, pre-bound
+  }
   
-    $scope.isPlaying = PlayerFactory.isPlaying;
-    $scope.getCurrentSong = PlayerFactory.getCurrentSong;
+  
+  $scope.isPlaying = PlayerFactory.isPlaying;
+  $scope.getCurrentSong = PlayerFactory.getCurrentSong;
+  $scope.viewState = false;
+
+  $rootScope.$on('showOneAlbum', function(event, data) {
+    showOneAlbum(data.albumId);
+    $scope.viewState = true;
+  });
+
+  $rootScope.$on('viewAlbums', function() {
+    $scope.viewState = false;
+  }); 
     
   // main toggle
   $scope.toggle = function (song) {
@@ -37,8 +50,9 @@ juke.controller('AlbumCtrl', function($scope, $rootScope, $log, StatsFactory, Al
     else {
       PlayerFactory.start(song, $scope.album.songs);
     }
-
   };
+
+
 
 });
 
@@ -48,8 +62,24 @@ juke.controller('AllAlbumsCtrl', function ($scope, $rootScope, $log, StatsFactor
     albums.forEach(function(album) {
       album.imageUrl = '/api/albums/' + album._id + '.image';
     });
+
     $scope.albums = albums;
+
+    $rootScope.$on('viewAlbums', function() {
+      $scope.viewState = true;
+    });
+
+    $scope.showOneAlbum = function(id) {
+      $rootScope.$broadcast('showOneAlbum', { albumId: id });
+      $scope.viewState = false;
+    };
+
+    $scope.viewState = false;
+    
   });
+
+
+
 });
 
 

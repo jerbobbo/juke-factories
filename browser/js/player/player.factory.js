@@ -1,12 +1,23 @@
 'use strict';
 
-juke.factory('PlayerFactory', function(){
+juke.factory('PlayerFactory', function($rootScope){
   // non-UI logic in here
   var audio = document.createElement('audio');
   var playing = false;
   var currentSong = null;
   var playerObj = {};
   var songList;
+
+  audio.addEventListener('ended', function () {
+    playerObj.next();
+    // $scope.$apply(); // triggers $rootScope.$digest, which hits other scopes
+    $rootScope.$evalAsync(); // likely best, schedules digest if none happening
+  });
+  audio.addEventListener('timeupdate', function () {
+    $rootScope.progress = 100 * playerObj.getProgress();
+    // $scope.$digest(); // re-computes current template only (this scope)
+    $rootScope.$evalAsync(); // likely best, schedules digest if none happening
+  });
 
   playerObj.start = function(song, songArray){
   	playerObj.pause();
@@ -50,7 +61,7 @@ juke.factory('PlayerFactory', function(){
 
   playerObj.getAudioElem = function() {
   	return audio;
-  }
+  };
 
   return playerObj;
 });
