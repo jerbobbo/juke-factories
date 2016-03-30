@@ -1,0 +1,30 @@
+<div class="album" ng-controller="AlbumCtrl">
+  <div  ng-if="viewState">
+    <p>
+      <h3>{{ album.name }}</h3> <h4> Duration: {{ album.totalDuration/60 | number:1 }} minutes</h4>
+      <img ng-src="{{ album.imageUrl }}" class="img-thumbnail">
+    </p>
+    <table class='table'>
+      <thead>
+        <tr>
+          <th></th>
+          <th>Name</th>
+          <th>Artists</th>
+          <th>Genres</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="song in album.songs" ng-class="{active: song === getCurrentSong()}">
+          <td>
+            <button class="btn btn-default btn-xs" ng-click="toggle(song, album.songs)">
+              <span class="glyphicon" ng-class="{'glyphicon-pause': isPlaying() && song === getCurrentSong(), 'glyphicon-play': song !== getCurrentSong() || !isPlaying()}"></span>
+            </button>
+          </td>
+          <td>{{ song.name }}</td>
+          <td><span ng-repeat="artist in song.artists">{{ artist.name }}{{ $last ? '' : ', ' }}</span></td>
+          <td>{{ song.genres.join(', ') }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

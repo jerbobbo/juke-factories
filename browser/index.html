@@ -18,147 +18,16 @@
   </head>
   <body ng-app="juke">
     <div id="main" class="container-fluid">
-
-      <div class="col-xs-2">
-        <sidebar ng-controller="SidebarCtrl">
-          <img src="juke.svg" class="logo">
-          <section>
-            <h4 class="playlist-item active">
-              <a ng-click="viewAlbums()" href="#">ALBUMS</a>
-            </h4>
-          </section>
-          <section>
-            <h5 class="playlist-item">
-              <a ng-click="viewAllArtists()" href="#">ARTISTS</a>
-            </h5>
-          </section>
-        </sidebar>
-      </div>
+      <div ng-include="'views/sidebar.html'"></div>
 
       <div class="col-xs-10">
-
-        <div ng-controller="ArtistCtrl">
-
-          <div ng-if="showOne">
-            <h3>{{ artist.name }}</h3>
-            <h3>Albums</h3>
-            <div class="row">
-              <div class="col-xs-4" ng-repeat="album in artist.albums">
-                <a class="thumbnail" href="#" ng-click="showOneAlbum(album._id)">
-                  <img ng-src="{{ album.imageUrl }}">
-                  <div class="caption">
-                    <h5>
-                      <span>{{ album.name }}</span>
-                    </h5>
-                    <small>{{ album.songs.length }} songs</small>
-                  </div>
-                </a>
-              </div>
-            </div>
-            <h4>Songs</h4>
-            <table class='table'>
-              <thead>
-                <tr>
-                  <th></th>
-                  <th>Name</th>
-                  <th>Genres</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr ng-repeat="song in artist.songs" ng-class="{active: song === getCurrentSong()}">
-                  <td>
-                    <button class="btn btn-default btn-xs" ng-click="toggle(song, artist.songs)">
-                      <span class="glyphicon" ng-class="{'glyphicon-pause': isPlaying() && song === getCurrentSong(), 'glyphicon-play': song !== getCurrentSong() || !isPlaying()}"></span>
-                    </button>
-                  </td>
-                  <td>{{ song.name }}</td>
-                  <td>{{ song.genres.join(', ') }}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <div ng-if="showAll">
-            <h3>Artists</h3>
-              <div class="list-group">
-                <div class="list-group-item" ng-repeat="artist in artists">
-                <a href="#" ng-click="viewOneArtist(artist._id)">{{ artist.name }}</a>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="album" ng-controller="AlbumCtrl">
-          <div  ng-if="viewState">
-            <p>
-              <h3>{{ album.name }}</h3> <h4> Duration: {{ album.totalDuration/60 | number:1 }} minutes</h4>
-              <img ng-src="{{ album.imageUrl }}" class="img-thumbnail">
-            </p>
-            <table class='table'>
-              <thead>
-                <tr>
-                  <th></th>
-                  <th>Name</th>
-                  <th>Artists</th>
-                  <th>Genres</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr ng-repeat="song in album.songs" ng-class="{active: song === getCurrentSong()}">
-                  <td>
-                    <button class="btn btn-default btn-xs" ng-click="toggle(song, album.songs)">
-                      <span class="glyphicon" ng-class="{'glyphicon-pause': isPlaying() && song === getCurrentSong(), 'glyphicon-play': song !== getCurrentSong() || !isPlaying()}"></span>
-                    </button>
-                  </td>
-                  <td>{{ song.name }}</td>
-                  <td><span ng-repeat="artist in song.artists">{{ artist.name }}{{ $last ? '' : ', ' }}</span></td>
-                  <td>{{ song.genres.join(', ') }}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <div  ng-controller="AllAlbumsCtrl">
-          <div ng-if="viewState">
-            <h3>Albums</h3>
-            <div class="row">
-              <div class="col-xs-4" ng-repeat="album in albums">
-                <a class="thumbnail" href="#" ng-click="showOneAlbum(album._id)">
-                  <img ng-src="{{ album.imageUrl }}">
-                  <div class="caption">
-                    <h5>
-                      <span>{{ album.name }}</span>
-                    </h5>
-                    <small>{{ album.songs.length }} songs</small>
-                  </div>
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-
+        <div ng-include="'views/artists.html'"></div>
+        <div ng-include="'views/oneAlbum.html'"></div>
+        <div ng-include="'views/allAlbums.html'"></div>
       </div>
 
       <footer>
-        <div ng-show="getCurrentSong()" ng-controller="PlayerCtrl">
-          <div class="pull-left">
-            <button class="btn btn-default" ng-click="prev()">
-              <span class="glyphicon glyphicon-step-backward"></span>
-            </button>
-            <button class="btn btn-default" ng-click="toggle(currentSong)">
-              <span class="glyphicon" ng-class="{'glyphicon-pause': isPlaying(), 'glyphicon-play': !isPlaying()}"></span>
-            </button>
-            <button class="btn btn-default" ng-click="next()">
-              <span class="glyphicon glyphicon-step-forward"></span>
-            </button>
-          </div>
-          <div class="bar">
-            <div class="progress">
-              <div class="progress-bar" ng-style="{width: progress + '%'}"></div>
-            </div>
-          </div>
-        </div>
+        <div ng-include="'views/player.html'"></div>
       </footer>
 
     </div>

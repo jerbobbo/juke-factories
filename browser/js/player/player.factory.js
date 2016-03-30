@@ -20,13 +20,29 @@ juke.factory('PlayerFactory', function($rootScope){
   });
 
   playerObj.start = function(song, songArray){
-  	playerObj.pause();
-  	audio.src = song.audioUrl;
-  	audio.load();
+  	
+    playerObj.pause();
+    currentSong = song;
+    songList = songArray;
+
+    var nextSong = songList[songList.indexOf(currentSong) + 1] || songList[0];
+    
+    if(!(song.audio)){
+      song.audio = document.createElement('audio');
+      song.audio.src = song.audioUrl;
+      song.audio.load();
+    }
+    if(!(nextSong.audio)){
+      nextSong.audio = document.createElement('audio');
+      nextSong.audio.src = nextSong.audioUrl;
+      nextSong.audio.load();
+    }
+
+    audio = song.audio;
+    audio.currentTime = 0;
   	audio.play();
-  	currentSong = song;
 	  playing = true;
-	  songList = songArray;
+	  
   };
 
   playerObj.pause = function(){
